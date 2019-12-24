@@ -15,3 +15,16 @@ require("channels");
 //
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Root from '../root';
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  ReactDOM.render(
+    <Root />,
+    document.body.appendChild(document.createElement('div')),
+  )
+});
