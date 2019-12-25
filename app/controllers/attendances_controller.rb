@@ -12,6 +12,8 @@ class AttendancesController < ApplicationController
   def get_model(mode)
     case mode
     when 'adult' then AdultAttendance
+    when 'teens' then TeenageChurchAttendance
+    when 'junior church' then JuniorChurchAttendance
     end
   end
 end

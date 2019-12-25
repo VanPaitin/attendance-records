@@ -18,13 +18,16 @@ require("channels");
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Root from '../root';
 
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <Root />,
+    <BrowserRouter>
+      <Root />
+    </BrowserRouter>,
     document.body.appendChild(document.createElement('div')),
   )
 });
