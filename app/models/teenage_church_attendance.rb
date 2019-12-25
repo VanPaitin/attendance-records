@@ -1,0 +1,2 @@
+class TeenageChurchAttendance < NonAdultAttendance
+end

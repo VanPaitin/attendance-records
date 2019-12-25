@@ -9,8 +9,8 @@
 
 services = [
   "Thanksgiving Service", "1st Clearwater Service", "2nd Clearwater Service",
-  "Anointing Service", "Prayer Clinic", "Holy Communion", "Congregational Vigil",
-  "Digging Deep", "Faith Clinic", "Special Service"
+  "Sunday Service", "Anointing Service", "Prayer Clinic", "Holy Communion",
+  "Congregational Vigil", "Digging Deep", "Faith Clinic", "Special Service"
 ]
 
 services.map! do |service|

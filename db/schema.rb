@@ -10,10 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_23_013706) do
+ActiveRecord::Schema.define(version: 2019_12_24_233730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "adult_attendances", force: :cascade do |t|
+    t.date "day"
+    t.bigint "service_id", null: false
+    t.integer "male"
+    t.integer "female"
+    t.integer "children"
+    t.jsonb "online"
+    t.jsonb "newcomers"
+    t.jsonb "decisions"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["service_id"], name: "index_adult_attendances_on_service_id"
+  end
+
+  create_table "extra_infos", force: :cascade do |t|
+    t.text "service_title"
+    t.string "attendance_type"
+    t.bigint "attendance_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "non_adult_attendances", force: :cascade do |t|
+    t.date "day"
+    t.string "type"
+    t.integer "male"
+    t.integer "female"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "services", force: :cascade do |t|
     t.string "name"
@@ -21,4 +52,5 @@ ActiveRecord::Schema.define(version: 2019_12_23_013706) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "adult_attendances", "services"
 end
