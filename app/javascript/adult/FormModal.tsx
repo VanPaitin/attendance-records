@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import NewAdultAttendance from './NewAdultAttendance';
@@ -13,9 +13,11 @@ export default () => {
     redirect ? <Redirect to='/'/> : (
       <Modal isOpen={modal} toggle={toggle} onClosed={() => setRedirect(true)} size='lg' centered>
         <ModalHeader toggle={toggle}>New Record</ModalHeader>
+
         <ModalBody>
           <NewAdultAttendance />
         </ModalBody>
+
         <ModalFooter>
           <Button color="primary" onClick={toggle}>Do Something</Button>{" "}
           <Button color="secondary" onClick={toggle}>Cancel</Button>
