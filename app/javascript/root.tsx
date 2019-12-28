@@ -1,10 +1,10 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import TeenageChurchAttendance from './TeenageChurchAttendance';
-import JuniorChurchAttendance from './JuniorChurchAttendance';
-import AdultChurchAttendance from './adult/AdultChurchAttendance';
 import Navbar from './Navbar';
+import JuniorChurchAttendance from './JuniorChurchAttendance';
+import TeenageChurchAttendance from './TeenageChurchAttendance';
+import AdultChurchAttendance from './adult/AdultChurchAttendance';
 
 export default () => {
   return (

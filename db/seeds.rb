@@ -8,14 +8,19 @@
 #
 
 services = [
-  "Thanksgiving Service", "1st Clearwater Service", "2nd Clearwater Service",
-  "Sunday Service", "Anointing Service", "Prayer Clinic", "Holy Communion",
-  "Congregational Vigil", "Digging Deep", "Faith Clinic", "Special Service"
+  { name: 'Thanksgiving Service', category: 'Sunday Service' },
+  { name: '1st Clearwater Service', category: 'Sunday Service' },
+  { name: '2nd Clearwater Service', category: 'Sunday Service' },
+  { name: 'Sunday Service', category: 'Sunday Service' },
+  { name: 'Digging Deep', category: 'Midweek Service' },
+  { name: 'Faith Clinic', category: 'Midweek Service' },
+  { name: 'Anointing Service', category: 'Monthly Program' },
+  { name: 'Prayer Clinic', category: 'Monthly Program' },
+  { name: 'Congregational Vigil', category: 'Monthly Program' },
+  { name: "Holy Communion", category: 'Monthly Program' },
+  { name: 'Holy Ghost service', category: 'Monthly Program' },
+  { name: 'Special service', category: 'Special service' }
 ]
-
-services.map! do |service|
-  { name: service }
-end
 
 Service.create!(services)
 
