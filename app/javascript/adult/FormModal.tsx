@@ -11,7 +11,7 @@ export default () => {
 
   return (
     redirect ? <Redirect to='/'/> : (
-      <Modal isOpen={modal} toggle={toggle} onClosed={() => setRedirect(true)} size='lg' centered>
+      <Modal isOpen={modal} toggle={toggle} onClosed={() => setRedirect(true)} size='lg'>
         <ModalHeader toggle={toggle}>New Record</ModalHeader>
 
         <ModalBody>

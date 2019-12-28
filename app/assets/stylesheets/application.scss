@@ -1,0 +1,17 @@
+.datepicker-container.datepicker-dropdown.datepicker-top-left {
+  z-index: 2000 !important;
+  width: 250px;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: none;
+  border-color: #39F;
+}
+
+.datepicker-container {
+  .datepicker-panel > ul > li {
+    font-weight: bold;
+    font-size: 15px;
+    height: 35px;
+    width: 35px;
+  }
+}
