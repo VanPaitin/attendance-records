@@ -10,7 +10,7 @@ import { faFacebook, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import '@chenfengyuan/datepicker/dist/datepicker.css';
 import '@chenfengyuan/datepicker/dist/datepicker';
 import 'bootstrap/js/dist/dropdown';
-import 'bootstrap-select/dist/css/bootstrap-select.css'
+import 'bootstrap-select/dist/css/bootstrap-select.css';
 import 'bootstrap-select';
 
 import ServiceOptions from './ServiceOptions';
