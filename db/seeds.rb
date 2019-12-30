@@ -19,7 +19,7 @@ services = [
   { name: 'Congregational Vigil', category: 'Monthly Program' },
   { name: "Holy Communion", category: 'Monthly Program' },
   { name: 'Holy Ghost service', category: 'Monthly Program' },
-  { name: 'Special service', category: 'Special service' }
+  { name: 'Special Service', category: 'Special Service' }
 ]
 
 Service.create!(services)

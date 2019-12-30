@@ -29,12 +29,15 @@ const FieldsetLabel = styled(Form.Label)`
 `;
 
 export default () => {
-  let [day, setDay] = useState(new Date);
+  let formatDate = date => moment(date).format('MMMM Do, YYYY.');
+  let [day, setDay] = useState(formatDate(new Date));
   let [services, setServices] = useState([]);
+  let [showServiceTitle, setShowServiceTitle] = useState(false);
 
   useEffect(() => {
     axios.get('/services').then(({ data }) => {
       setServices(data);
+      $('.selectpicker').selectpicker('refresh');
     })
   }, []);
 
@@ -44,17 +47,24 @@ export default () => {
       pick: e => {
         e.preventDefault();
         setDay(e.date);
-        e.target.value = moment(e.date).format('MMMM Do, YYYY.');
+        e.target.value = formatDate(e.date);
       }
     });
   }, []);
+
+  let handleServiceChange = e => {
+    let id = e.target.value;
+    let specialService = services['Special Service'][0];
+
+    setShowServiceTitle(parseInt(id, 10) === specialService.id);
+  };
 
   return (
     <Form>
       <Form.Row>
         <Form.Group as={Col} controlId="formBasicDate">
           <Form.Label>Date</Form.Label>
-          <StyledInput placeholder="Specify date" className="datepicker"/>
+          <StyledInput defaultValue={day} className="datepicker"/>
           <Form.Text className="text-muted">
             Please select the date of the Church meeting
           </Form.Text>
@@ -67,10 +77,17 @@ export default () => {
             className='selectpicker show-tick'
             title='Please choose the service'
             data-style="btn-info"
-            data-header="Select the service held">
+            data-header="Select the service held"
+            onChange={handleServiceChange}
+          >
             <ServiceOptions services={services}/>
           </Form.Control>
         </Form.Group>
+
+        {showServiceTitle && <Form.Group as={Col} controlId='formBasicExtraInfo'>
+          <Form.Label>Service Title</Form.Label>
+          <StyledInput type='text' placeholder='Enter any extra info' />
+        </Form.Group>}
       </Form.Row>
 
       <Form.Row>
