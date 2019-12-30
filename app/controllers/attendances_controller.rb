@@ -7,6 +7,10 @@ class AttendancesController < ApplicationController
     render json: attendances
   end
 
+  def create
+    # binding.pry
+  end
+
   private
 
   def get_model(mode)

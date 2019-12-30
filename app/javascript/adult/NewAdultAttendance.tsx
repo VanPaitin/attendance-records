@@ -33,6 +33,7 @@ export default () => {
   let [day, setDay] = useState(formatDate(new Date));
   let [services, setServices] = useState([]);
   let [showServiceTitle, setShowServiceTitle] = useState(false);
+  let token = $('meta[name="csrf-token"]').attr("content");
 
   useEffect(() => {
     axios.get('/services').then(({ data }) => {
@@ -60,11 +61,13 @@ export default () => {
   };
 
   return (
-    <Form>
+    <Form action='/attendances?mode=adult' method='POST' id='adultAttendance'>
+      <Form.Control as='input' type='hidden' name='authenticity_token' value={token}/>
+
       <Form.Row>
         <Form.Group as={Col} controlId="formBasicDate">
           <Form.Label>Date</Form.Label>
-          <StyledInput defaultValue={day} className="datepicker"/>
+          <StyledInput defaultValue={day} className="datepicker" name='[adult]day'/>
           <Form.Text className="text-muted">
             Please select the date of the Church meeting
           </Form.Text>
@@ -78,6 +81,7 @@ export default () => {
             title='Please choose the service'
             data-style="btn-info"
             data-header="Select the service held"
+            name='[adult]service_id'
             onChange={handleServiceChange}
           >
             <ServiceOptions services={services}/>
