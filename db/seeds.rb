@@ -8,18 +8,18 @@
 #
 
 services = [
-  { name: 'Thanksgiving Service', category: 'Sunday Service' },
-  { name: '1st Clearwater Service', category: 'Sunday Service' },
-  { name: '2nd Clearwater Service', category: 'Sunday Service' },
-  { name: 'Sunday Service', category: 'Sunday Service' },
-  { name: 'Digging Deep', category: 'Midweek Service' },
-  { name: 'Faith Clinic', category: 'Midweek Service' },
-  { name: 'Anointing Service', category: 'Monthly Program' },
-  { name: 'Prayer Clinic', category: 'Monthly Program' },
-  { name: 'Congregational Vigil', category: 'Monthly Program' },
-  { name: "Holy Communion", category: 'Monthly Program' },
-  { name: 'Holy Ghost service', category: 'Monthly Program' },
-  { name: 'Special Service', category: 'Special Service' }
+  { name: '1st Clearwater Service', category: 'Sunday Service', weekday: 'Sunday' },
+  { name: '2nd Clearwater Service', category: 'Sunday Service', weekday: 'Sunday' },
+  { name: 'Sunday Service', category: 'Sunday Service', weekday: 'Sunday' },
+  { name: 'Digging Deep', category: 'Midweek Service', weekday: 'Tuesday' },
+  { name: 'Faith Clinic', category: 'Midweek Service', weekday: 'Thursday' },
+  { name: 'Thanksgiving Service', category: 'Monthly Program', weekday: 'Sunday' },
+  { name: 'Anointing Service', category: 'Monthly Program', weekday: 'Sunday' },
+  { name: 'Prayer Clinic', category: 'Monthly Program', weekday: 'Tuesday' },
+  { name: 'Congregational Vigil', category: 'Monthly Program', weekday: 'Friday' },
+  { name: "Holy Communion", category: 'Monthly Program', weekday: 'Thursday' },
+  { name: 'Holy Ghost service', category: 'Monthly Program', weekday: 'Friday' },
+  { name: 'Special Service', category: 'Special Service', weekday: 'any' }
 ]
 
 Service.create!(services)

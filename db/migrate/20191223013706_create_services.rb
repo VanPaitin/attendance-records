@@ -3,6 +3,7 @@ class CreateServices < ActiveRecord::Migration[6.0]
     create_table :services do |t|
       t.string :name
       t.string :category
+      t.string :weekday
 
       t.timestamps
     end

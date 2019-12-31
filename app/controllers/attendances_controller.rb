@@ -1,5 +1,6 @@
 class AttendancesController < ApplicationController
   before_action :get_model
+
   def index
     attendances = @klass.page(params[:page])
 

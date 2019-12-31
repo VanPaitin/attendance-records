@@ -39,19 +39,23 @@ ActiveRecord::Schema.define(version: 2019_12_24_233730) do
 
   create_table "non_adult_attendances", force: :cascade do |t|
     t.date "day"
+    t.bigint "service_id", null: false
     t.string "type"
     t.integer "male"
     t.integer "female"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["service_id"], name: "index_non_adult_attendances_on_service_id"
   end
 
   create_table "services", force: :cascade do |t|
     t.string "name"
     t.string "category"
+    t.string "weekday"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "adult_attendances", "services"
+  add_foreign_key "non_adult_attendances", "services"
 end

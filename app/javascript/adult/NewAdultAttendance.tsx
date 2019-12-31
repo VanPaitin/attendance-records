@@ -45,6 +45,7 @@ export default () => {
   useEffect(() => {
     $('.datepicker').datepicker({
       autoHide: true,
+      endDate: new Date(),
       pick: e => {
         e.preventDefault();
         setDay(e.date);
