@@ -43,7 +43,9 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    $('.datepicker').datepicker({
+    let $datepicker = $('.datepicker');
+
+    $datepicker.datepicker({
       autoHide: true,
       endDate: new Date(),
       pick: e => {
@@ -52,6 +54,8 @@ export default () => {
         e.target.value = formatDate(e.date);
       }
     });
+
+    return () => $datepicker.datepicker('destroy');
   }, []);
 
   let handleServiceChange = e => {

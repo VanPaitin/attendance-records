@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import $ from 'jquery';
 import styled from 'styled-components';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import NewAdultAttendance from './NewAdultAttendance';
@@ -40,7 +41,10 @@ export default () => {
   let [buttonState, setButtonState] = useState('primary');
   let [buttonText, setButtonText] = useState('Create');
 
-  let toggle = () => setModal(!modal);
+  let toggle = () => {
+    $('.datepicker').datepicker('hide');
+    setModal(!modal);
+  };
 
   let submitForm = () => {
     setButtonText('Loading');
