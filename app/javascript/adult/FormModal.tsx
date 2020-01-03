@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import axios from 'axios';
 import $ from 'jquery';
 import styled from 'styled-components';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -35,7 +36,7 @@ let LoadingButton = () => (
   </StyledLoadingButton>
 );
 
-export default () => {
+export default ({ fetchRecords }) => {
   let [modal, setModal] = useState(true);
   let [redirect, setRedirect] = useState(false);
   let [buttonState, setButtonState] = useState('primary');
@@ -47,9 +48,15 @@ export default () => {
   };
 
   let submitForm = () => {
-    setButtonText('Loading');
     let form = document.getElementById('adultAttendance') as HTMLFormElement;
-    form.submit();
+
+    axios.post('/attendances?mode=adult', new FormData(form))
+      .then(() => {
+        setButtonState('success');
+        setButtonText('Created!');
+        fetchRecords();
+        setTimeout(toggle, 800);
+      });
   };
 
   return (

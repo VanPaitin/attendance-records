@@ -10,10 +10,14 @@ export default () => {
 
   let match = useRouteMatch();
 
-  useEffect(() => {
+  let fetchRecords = () => {
     axios.get('/attendances', { params: { mode: 'adult' }}).then(({ data }) => {
       setRecords(data);
-    })
+    });
+  };
+
+  useEffect(() => {
+    fetchRecords();
   }, []);
 
   return (
@@ -29,12 +33,12 @@ export default () => {
         </tr>
         </thead>
         <tbody>
-        {records.map(record => <Attendance record={record}/>)}
+        {records.map(record => <Attendance record={record} key={record.id}/>)}
         </tbody>
       </table>
 
       <Route path={`${match.path}attendance/new`}>
-        <FormModal/>
+        <FormModal fetchRecords={fetchRecords}/>
       </Route>
     </div>
   )

@@ -9,6 +9,12 @@ class AttendancesController < ApplicationController
 
   def create
     attendance = @klass.new(attendance_params)
+
+    if attendance.save
+      head 201
+    else
+      render json: attendance.errors, status: 422
+    end
   end
 
   private

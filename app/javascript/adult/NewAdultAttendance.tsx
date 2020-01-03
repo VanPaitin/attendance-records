@@ -66,7 +66,7 @@ export default () => {
   };
 
   return (
-    <Form action='/attendances?mode=adult' method='POST' id='adultAttendance'>
+    <Form id='adultAttendance'>
       <Form.Control as='input' type='hidden' name='authenticity_token' value={token}/>
       <Form.Control as='input' type='hidden' name='[adult][day]' value={day.toString()}/>
       <Form.Row>
