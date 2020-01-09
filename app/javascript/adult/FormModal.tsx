@@ -50,6 +50,8 @@ export default ({ fetchRecords }) => {
   let submitForm = () => {
     let form = document.getElementById('adultAttendance') as HTMLFormElement;
 
+    setButtonText('Loading');
+
     axios.post('/attendances?mode=adult', new FormData(form))
       .then(() => {
         setButtonState('success');

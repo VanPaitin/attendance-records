@@ -18,6 +18,11 @@ const CenteredHeading = styled(UnpaddedHeading)`
   text-align: center;
 `;
 
+const SubHeading = styled(CenteredHeading)`
+  font-style: italic;
+  font-weight: 500;
+`;
+
 export default () => {
   let [records, setRecords] = useState([]);
 
@@ -44,9 +49,9 @@ export default () => {
             <CenteredHeading rowSpan={2}>Male</CenteredHeading>
             <CenteredHeading rowSpan={2}>Female</CenteredHeading>
             <CenteredHeading rowSpan={2}>Children</CenteredHeading>
-            <CenteredHeading colSpan={2}>Online</CenteredHeading>
-            <CenteredHeading colSpan={2}>Newcomers</CenteredHeading>
-            <CenteredHeading colSpan={2}>Decisions</CenteredHeading>
+            <SubHeading colSpan={2}>Online</SubHeading>
+            <SubHeading colSpan={2}>Newcomers</SubHeading>
+            <SubHeading colSpan={2}>Decisions</SubHeading>
           </tr>
           <tr>
             <CenteredHeading><FontAwesomeIcon icon={faFacebook} color='#3578E5'/> Facebook</CenteredHeading>
