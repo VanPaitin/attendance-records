@@ -2,9 +2,7 @@ class AttendancesController < ApplicationController
   before_action :get_model
 
   def index
-    attendances = @klass.joins(:service).select(
-      "#{@klass.table_name}.*", 'services.name as service_name'
-    ).page(params[:page]).order(day: :desc)
+    attendances = @klass.attendances.page(params[:page])
 
     render json: attendances
   end
