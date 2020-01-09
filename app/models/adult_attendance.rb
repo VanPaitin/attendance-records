@@ -18,7 +18,22 @@ class AdultAttendance < ApplicationRecord
 
   before_validation :set_stored_accessors
 
+  scope :attendances, -> do
+    joins(:service).left_joins(:extra_info).select("#{table_name}.*", attendances_sql).order(day: :desc)
+  end
+
   delegate :name, :weekday, :any_weekday?, to: :service, allow_nil: :true
+
+  class << self
+    def attendances_sql
+      <<~SQL
+        CASE
+          WHEN services.name = 'Special Service' THEN extra_infos.service_title
+          ELSE services.name
+        END as service_name
+      SQL
+    end
+  end
 
   private
 
