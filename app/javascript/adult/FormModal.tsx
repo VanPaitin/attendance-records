@@ -3,37 +3,20 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import $ from 'jquery';
 import styled from 'styled-components';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import NewAdultAttendance from './NewAdultAttendance';
 
-const LoadingText = styled.span`
-  :after {
-    overflow: hidden;
-    display: inline-block;
-    vertical-align: bottom;  
-    animation: ellipsis steps(4,end) 1s infinite;
-    content: "\\2026"; /* ascii code for the ellipsis character */
-    width: 0px;
-  }
-  
-  @keyframes ellipsis {
-    to {
-      width: 1.25em;    
-    }
-  }
-`;
-
-const StyledLoadingButton = styled(Button)`
-  max-height: 48px;
-  width: 120px;
+const StyledLoader = styled(Button)`
   text-align: left;
   opacity: 0.9 !important;
+  cursor: not-allowed;
 `;
 
 let LoadingButton = () => (
-  <StyledLoadingButton color='info' size='lg' disabled>
-    <LoadingText>Loading</LoadingText>
-  </StyledLoadingButton>
+  <StyledLoader color='info' size='lg' disabled>
+    Loading...
+    <Spinner type="grow" size="sm" role="status" aria-hidden="true"/>
+  </StyledLoader>
 );
 
 export default ({ fetchRecords }) => {
