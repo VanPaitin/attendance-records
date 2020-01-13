@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import Attendance from '../Attendance';
 import FormModal from './FormModal';
+import ActionsPopover from './ActionsPopover';
 
 const UnpaddedHeading = styled.th`
   padding-top: 3px !important;
@@ -25,6 +26,8 @@ const SubHeading = styled(CenteredHeading)`
 
 export default () => {
   let [records, setRecords] = useState([]);
+  let [popoverId, setPopoverId] = useState(null);
+  let [popoverPosition, setPopoverPosition] = useState({});
 
   let match = useRouteMatch();
 
@@ -34,12 +37,27 @@ export default () => {
     });
   };
 
+  let showPopover = (e, id) => {
+    e.stopPropagation();
+    e.persist();
+    if (popoverId == id) {
+      setPopoverId(null)
+    } else {
+      let clientWidth = document.body.clientWidth;
+      let maxLeftOffset = clientWidth - 200;
+      let leftOffset = e.clientX <= maxLeftOffset ? e.clientX : maxLeftOffset;
+      setPopoverPosition({ left: leftOffset, top: e.clientY });
+      setPopoverId(id);
+    }
+  };
+
   useEffect(() => {
     fetchRecords();
   }, []);
 
   return (
-    <div className='container' style={{ marginTop: '50px', maxWidth: '1170px' }}>
+    <div className='container'  onClick={() => setPopoverId(null)}>
+      {popoverId && <ActionsPopover recordId={popoverId} position={popoverPosition} />}
       <h3>Recent Records</h3>
       <Table striped bordered hover style={{ marginTop: '30px' }}>
         <thead>
@@ -63,12 +81,13 @@ export default () => {
           </tr>
         </thead>
         <tbody>
-        {records.map(record => <Attendance record={record} key={record.id}/>)}
+        {records.map(record => <Attendance record={record} showPopover={showPopover} key={record.id}/>)}
         </tbody>
       </Table>
+
       <div style={{ textAlign: 'right', marginTop: '50px' }}>
         <Button as={Link} to={`${match.url}attendance/new`} variant="primary" size="lg">
-          New Record/Attendance
+          New Record
         </Button>
       </div>
 
