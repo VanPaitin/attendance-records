@@ -10,8 +10,12 @@ const CenteredCell = styled(BoldCell)`
   text-align: center;
 `;
 
-export default ({ record }) => (
-  <tr>
+const PointerRow = styled.tr`
+  cursor: pointer;
+`;
+
+export default ({ record, showPopover }) => (
+  <PointerRow onClick={e => showPopover(e, record.id)}>
     <BoldCell>{moment(record.day).format('dddd, MMM D, YYYY')}</BoldCell>
     <BoldCell style={{ color: 'blue' }}>{record.service_name}</BoldCell>
     <CenteredCell>{record.male}</CenteredCell>
@@ -23,5 +27,5 @@ export default ({ record }) => (
     <CenteredCell>{record.newcomers.female}</CenteredCell>
     <CenteredCell>{record.decisions.male}</CenteredCell>
     <CenteredCell>{record.decisions.female}</CenteredCell>
-  </tr>
+  </PointerRow>
 )
