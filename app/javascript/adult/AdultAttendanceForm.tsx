@@ -28,9 +28,34 @@ const FieldsetLabel = styled(Form.Label)`
   margin-top: 10px;
 `;
 
-export default () => {
+interface Online {
+  facebook: number;
+  youtube: number;
+}
+
+interface MaleFemaleProps {
+  male: number;
+  female: number;
+}
+
+const maleFemalePropsInit = { male: null, female: null };
+
+class Record {
+  day: Date = new Date();
+  service_id: string;
+  extra_info?: { service_title: string } = { service_title: '' };
+  male: number;
+  female: number;
+  children: number;
+  online: Online = { facebook: null, youtube: null };
+  newcomers: MaleFemaleProps = maleFemalePropsInit;
+  decisions: MaleFemaleProps = maleFemalePropsInit;
+}
+
+export default ({ recordId }) => {
   let formatDate = date => moment(date).format('MMMM Do, YYYY.');
-  let [day, setDay] = useState(new Date);
+  let [record, setRecord] = useState<Record>(new Record());
+  let [day, setDay] = useState(record.day);
   let [services, setServices] = useState([]);
   let [showServiceTitle, setShowServiceTitle] = useState(false);
   let token = $('meta[name="csrf-token"]').attr("content");
@@ -40,6 +65,21 @@ export default () => {
       setServices(data);
       $('.selectpicker').selectpicker('refresh');
     })
+  }, []);
+
+  useEffect(() => {
+    if (recordId) {
+      axios.get(`/attendances/${recordId}?mode=adult`).then(({ data }) => {
+        setDay(data.day);
+        setRecord(data);
+        if (data.extra_info) {
+          setShowServiceTitle(true);
+        }
+        let calendarInput = document.querySelector('.datepicker') as HTMLInputElement;
+        calendarInput.value = formatDate(data.day);
+        $('.selectpicker').selectpicker('val', data.service_id)
+      })
+    }
   }, []);
 
   useEffect(() => {
@@ -84,8 +124,8 @@ export default () => {
             as='select'
             className='selectpicker show-tick'
             title='Please choose the service'
-            data-style="btn-primary"
-            data-header="Select the service held"
+            data-style='btn-primary'
+            data-header='Select the service held'
             name='[adult]service_id'
             onChange={handleServiceChange}
           >
@@ -95,28 +135,31 @@ export default () => {
 
         {showServiceTitle && <Form.Group as={Col} controlId='formBasicExtraInfo'>
           <Form.Label>Service Title</Form.Label>
-          <StyledInput type='text' placeholder='Enter any extra info' name='[adult][extra_info_attributes]service_title'/>
+          <StyledInput
+            type='text' placeholder='Enter any extra info'
+            defaultValue={record.extra_info.service_title}
+            name='[adult][extra_info_attributes]service_title'/>
         </Form.Group>}
       </Form.Row>
 
       <Form.Row>
         <Form.Group  as={Col} controlId="formBasicMen">
           <Form.Label>Male</Form.Label>
-          <StyledInput type='number' placeholder="Number of men" name='[adult]male'/>
+          <StyledInput type='number' placeholder="Number of men" name='[adult]male' defaultValue={record.male}/>
           <Form.Text className="text-muted">
             Please enter the number of men
           </Form.Text>
         </Form.Group>
         <Form.Group  as={Col} controlId="formBasicWomen">
           <Form.Label>Female</Form.Label>
-          <StyledInput type='number' placeholder="Number of women" name='[adult]female'/>
+          <StyledInput type='number' placeholder="Number of women" name='[adult]female' defaultValue={record.female}/>
           <Form.Text className="text-muted">
             Please enter the number of women
           </Form.Text>
         </Form.Group>
         <Form.Group  as={Col} controlId="formBasicChildren">
           <Form.Label>Children</Form.Label>
-          <StyledInput type='number' placeholder="Number of children" name='[adult]children'/>
+          <StyledInput type='number' placeholder="Number of children" name='[adult]children' defaultValue={record.children}/>
           <Form.Text className="text-muted">
             Please enter the number of children
           </Form.Text>
@@ -128,9 +171,13 @@ export default () => {
           <fieldset>
             <legend>Online:</legend>
             <Form.Label><FontAwesomeIcon icon={faFacebook} color='#3578E5'/> Facebook</Form.Label>
-            <StyledInput type='number' placeholder="Number of facebook viewers" name='[adult][online]facebook'/>
+            <StyledInput
+              type='number' placeholder="Number of facebook viewers"
+              name='[adult][online]facebook' defaultValue={record.online.facebook}/>
             <FieldsetLabel><FontAwesomeIcon icon={faYoutube} color='red' /> Youtube</FieldsetLabel>
-            <StyledInput type='number' placeholder="Number of youtube viewers" name='[adult][online]youtube'/>
+            <StyledInput
+              type='number' placeholder="Number of youtube viewers"
+              name='[adult][online]youtube' defaultValue={record.online.youtube}/>
           </fieldset>
           <Form.Text className="text-muted">
             Please enter the number of online viewers by platform
@@ -141,9 +188,13 @@ export default () => {
           <fieldset>
             <legend>Newcomers:</legend>
             <Form.Label>Male</Form.Label>
-            <StyledInput type='number' placeholder="Number of male newcomers" name='[adult][newcomers]male'/>
+            <StyledInput
+              type='number' placeholder="Number of male newcomers"
+              name='[adult][newcomers]male' defaultValue={record.newcomers.male}/>
             <FieldsetLabel>Female</FieldsetLabel>
-            <StyledInput type='number' placeholder="Number of female newcomers" name='[adult][newcomers]female'/>
+            <StyledInput
+              type='number' placeholder="Number of female newcomers"
+              name='[adult][newcomers]female' defaultValue={record.newcomers.female}/>
           </fieldset>
           <Form.Text className="text-muted">
             Enter the number of newcomers
@@ -154,9 +205,13 @@ export default () => {
           <fieldset>
             <legend>Decisions:</legend>
             <Form.Label>Male</Form.Label>
-            <StyledInput type='number' placeholder="Number of male decisions" name='[adult][decisions]male'/>
+            <StyledInput
+              type='number' placeholder="Number of male decisions"
+              name='[adult][decisions]male' defaultValue={record.decisions.male}/>
             <FieldsetLabel>Female</FieldsetLabel>
-            <StyledInput type='number' placeholder="Number of female decisions" name='[adult][decisions]female'/>
+            <StyledInput
+              type='number' placeholder="Number of female decisions"
+              name='[adult][decisions]female' defaultValue={record.decisions.female}/>
           </fieldset>
           <Form.Text className="text-muted">
             Enter the number of decisions
