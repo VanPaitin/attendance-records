@@ -5,7 +5,7 @@ module Attendance
     belongs_to :service
     has_one :extra_info, as: :attendance, dependent: :destroy
 
-    accepts_nested_attributes_for :extra_info
+    accepts_nested_attributes_for :extra_info, update_only: true
 
     validates :day, presence: true,
               timeliness: { on_or_before: lambda { Date.current }, type: :date }
