@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Table from 'react-bootstrap/Table';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFacebook, faYoutube} from '@fortawesome/free-brands-svg-icons';
-import Attendance from '../Attendance';
+import Attendance from './Attendance';
 
 const UnpaddedHeading = styled.th`
   padding-top: 3px !important;

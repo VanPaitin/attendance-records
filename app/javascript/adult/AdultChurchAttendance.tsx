@@ -1,69 +1,131 @@
-import React, { useEffect, useState } from 'react';
-import { Route, useRouteMatch, Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
+import React from 'react';
+import { Route, RouteProps, Link, withRouter } from 'react-router-dom';
+import $ from 'jquery';
 import axios from 'axios';
+import Button from 'react-bootstrap/Button';
 
 import FormModal from './FormModal';
 import ActionsPopover from './ActionsPopover';
 import AttendancesTable from './AttendancesTable';
 
-export default () => {
-  let [records, setRecords] = useState([]);
-  let [popoverId, setPopoverId] = useState(null);
-  let [popoverPosition, setPopoverPosition] = useState({});
+type MaleFemaleType = {
+  male: number
+  female: number
+}
 
-  let match = useRouteMatch();
+type Record = {
+  id: number
+  service_id: number
+  service_name: string
+  day: Date
+  male: number
+  female: number
+  children: number
+  online: {
+    facebook: number
+    youtube: number
+  }
+  newcomers: MaleFemaleType
+  decisions: MaleFemaleType
+}
 
-  let fetchRecords = () => {
+type PopoverPosition = {
+  left: number
+  top: number
+}
+
+interface State {
+  records: Record[]
+  popoverId: number
+  popoverPosition: PopoverPosition
+}
+
+class AdultChurchAttendance extends React.Component<RouteProps, State> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      records: [],
+      popoverId: null,
+      popoverPosition: { left: null, top: null }
+    }
+  }
+
+  fetchRecords = () => {
     axios.get('/attendances', { params: { mode: 'adult' }}).then(({ data }) => {
-      setRecords(data);
+      this.setState({ records: data });
     });
   };
 
-  let removeRecord = (id) => {
-    setPopoverId(null);
-    setRecords(records.filter(record => record.id !== id))
-  };
+  componentDidMount() {
+    this.fetchRecords();
+  }
 
-  let showPopover = (e, id) => {
-    e.stopPropagation();
-    e.persist();
-    if (popoverId == id) {
-      setPopoverId(null)
-    } else {
-      let clientWidth = document.body.clientWidth;
-      let maxLeftOffset = clientWidth - 200;
-      let leftOffset = e.clientX <= maxLeftOffset ? e.clientX : maxLeftOffset;
-      setPopoverPosition({ left: leftOffset, top: e.clientY });
-      setPopoverId(id);
+  removeRecord = (id) => {
+    let confirmation = confirm('Are you sure to delete the record?');
+
+    if (confirmation) {
+      let token = $('meta[name="csrf-token"]').attr("content");
+      axios.delete(
+        `/attendances/${id}?mode=adult`,
+        { data: { authenticity_token: token } }
+      ).then(() => {
+        this.setState({
+          popoverId: null,
+          records: this.state.records.filter(record => record.id !== id)
+        });
+      })
     }
   };
 
-  useEffect(() => {
-    fetchRecords();
-  }, []);
+  showPopover = (e, id) => {
+    e.stopPropagation();
+    e.persist();
+    if (this.state.popoverId == id) {
+      this.clearPopoverId()
+    } else {
+      let clientWidth = document.body.clientWidth;
+      let minLeftOffset = clientWidth - 200;
+      let leftOffset = e.clientX <= minLeftOffset ? e.clientX : minLeftOffset;
+      this.setState({ popoverPosition: { left: leftOffset, top: e.clientY }, popoverId: id})
+    }
+  };
 
-  return (
-    <div className='container'  onClick={() => setPopoverId(null)}>
-      {popoverId &&
-        <ActionsPopover recordId={popoverId} position={popoverPosition} removeRecord={removeRecord} />}
+  clearPopoverId = () => {
+    this.setState({ popoverId: null })
+  };
 
-      <h3>Recent Records</h3>
+  render() {
+    return (
+      <div className='container'  onClick={this.clearPopoverId}>
+        {this.state.popoverId &&
+        <ActionsPopover
+          recordId={this.state.popoverId}
+          position={this.state.popoverPosition}
+          removeRecord={this.removeRecord}
+          clearPopover={this.clearPopoverId}/>
+        }
 
-      <AttendancesTable records={records} showPopover={showPopover} />
+        <h3>Recent Records</h3>
 
-      <div style={{ textAlign: 'right', marginTop: '50px' }}>
-        <Button as={Link} to={`${match.url}attendance/new`} variant="primary" size="lg">
-          New Record
-        </Button>
+        <AttendancesTable records={this.state.records} showPopover={this.showPopover} />
+
+        <div style={{ textAlign: 'right', marginTop: '50px' }}>
+          <Button as={Link} to={`${this.props.match.url}attendance/new`} variant="primary" size="lg">
+            New Record
+          </Button>
+        </div>
+
+        <Route path={`${this.props.match.path}attendance/new`}>
+          <FormModal fetchRecords={this.fetchRecords}/>
+        </Route>
+
+        <Route path={`${this.props.match.path}attendance/:id/edit`}>
+          <FormModal fetchRecords={this.fetchRecords}/>
+        </Route>
       </div>
-
-      <Route path={`${match.path}attendance/new`}>
-        <FormModal fetchRecords={fetchRecords} clearPopover={setPopoverId}/>
-      </Route>
-      <Route path={`${match.path}attendance/:id/edit`}>
-        <FormModal fetchRecords={fetchRecords} clearPopover={setPopoverId}/>
-      </Route>
-    </div>
-  )
+    )
+  }
 }
+
+export default withRouter(AdultChurchAttendance);
