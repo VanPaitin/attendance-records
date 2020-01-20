@@ -7,8 +7,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'rea
 import AdultAttendanceForm from './AdultAttendanceForm';
 
 type ModalProps = {
-  fetchRecords: () => void,
-  clearPopover?: (num: number) => void,
+  fetchRecords: () => void
 }
 
 interface ModalState {
@@ -45,10 +44,6 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
       buttonState: 'primary',
       buttonText: this.id ? 'Update' : 'Create'
     }
-  }
-
-  componentDidMount() {
-    this.props.clearPopover(null)
   }
 
   toggle = () => {
