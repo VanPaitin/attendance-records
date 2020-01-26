@@ -21,7 +21,7 @@ class AttendancesController < ApplicationController
     if attendance.save
       head 201
     else
-      render json: attendance.errors, status: 422
+      render json: attendance.errors.full_messages, status: 422
     end
   end
 

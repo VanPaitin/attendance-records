@@ -16,12 +16,20 @@ interface ModalState {
   validated: boolean
   buttonState: string
   buttonText: string
+  errors: string[]
 }
 
 const StyledLoader = styled(Button)`
   text-align: left;
   opacity: 0.9 !important;
   cursor: not-allowed;
+`;
+
+const Errors = styled.ul`
+  margin-bottom: 0
+  margin-top: 1rem;
+  color: red;
+  font-style: italic
 `;
 
 class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
@@ -37,7 +45,8 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
       redirect: false,
       validated: false,
       buttonState: 'primary',
-      buttonText: this.id ? 'Update' : 'Create'
+      buttonText: this.id ? 'Update' : 'Create',
+      errors: []
     }
   }
 
@@ -47,7 +56,12 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
   };
 
   createRecord = form => {
-    axios.post('/attendances?mode=adult', new FormData(form)).then(this.redirectBack);
+    axios.post('/attendances?mode=adult', new FormData(form)).then(this.redirectBack)
+      .catch(({ response: { data }}) => {
+        this.setState({
+          errors: data, buttonState: 'primary', buttonText: this.id ? 'Update' : 'Create'
+        })
+      })
   };
 
   updateRecord = form => {
@@ -96,6 +110,10 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
       redirect ? <Redirect to='/'/> : (
         <Modal isOpen={modal} toggle={this.toggle} onClosed={() => this.setState({ redirect: true })} size='lg'>
           <ModalHeader toggle={this.toggle}>{this.id ? 'Edit' : 'New'} Record</ModalHeader>
+
+          <Errors>
+            { this.state.errors.map((error, index) => <li key={index}>{error}</li>)}
+          </Errors>
 
           <ModalBody>
             <AdultAttendanceForm recordId={this.id} validated={this.state.validated}/>
