@@ -11,7 +11,7 @@ module Attendance
               timeliness: { on_or_before: lambda { Date.current }, type: :date }
     validates :day, uniqueness: {
                 scope: :service,
-                message: 'It\'s like you have previously recorded the attendance for this service for the same day'
+                message: "selected is the same as that of a previously recorded attendance for this service."
               }, unless: :any_weekday?
   end
 end

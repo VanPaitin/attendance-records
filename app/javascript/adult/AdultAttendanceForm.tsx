@@ -146,7 +146,9 @@ export default ({ recordId, validated }: FormProps) => {
           <StyledInput
             type='text' placeholder='Enter any extra info'
             defaultValue={record.extra_info.service_title}
-            name='[adult][extra_info_attributes]service_title'/>
+            name='[adult][extra_info_attributes]service_title' required/>
+          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+          <Form.Control.Feedback type='invalid'>Please enter the title of the service!</Form.Control.Feedback>
         </Form.Group>}
       </Form.Row>
 

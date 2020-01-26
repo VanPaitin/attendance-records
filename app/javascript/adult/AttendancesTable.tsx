@@ -19,32 +19,30 @@ const SubHeading = styled(CenteredHeading)`
   font-weight: 500;
 `;
 
-export default ({ records, showPopover }) => {
-  return (
-    <Table striped bordered hover style={{ marginTop: '30px' }}>
-      <thead>
-      <tr>
-        <UnpaddedHeading rowSpan={2}>Day</UnpaddedHeading>
-        <UnpaddedHeading rowSpan={2}>Service</UnpaddedHeading>
-        <CenteredHeading rowSpan={2}>Male</CenteredHeading>
-        <CenteredHeading rowSpan={2}>Female</CenteredHeading>
-        <CenteredHeading rowSpan={2}>Children</CenteredHeading>
-        <SubHeading colSpan={2}>Online</SubHeading>
-        <SubHeading colSpan={2}>Newcomers</SubHeading>
-        <SubHeading colSpan={2}>Decisions</SubHeading>
-      </tr>
-      <tr>
-        <CenteredHeading><FontAwesomeIcon icon={faFacebook} color='#3578E5'/> Facebook</CenteredHeading>
-        <CenteredHeading><FontAwesomeIcon icon={faYoutube} color='red' /> Youtube</CenteredHeading>
-        <CenteredHeading>Male</CenteredHeading>
-        <CenteredHeading>Female</CenteredHeading>
-        <CenteredHeading>Male</CenteredHeading>
-        <CenteredHeading>Female</CenteredHeading>
-      </tr>
-      </thead>
-      <tbody>
-      {records.map(record => <Attendance record={record} showPopover={showPopover} key={record.id}/>)}
-      </tbody>
-    </Table>
-  )
-}
+export default ({ records, showPopover }) => (
+  <Table striped bordered hover style={{ marginTop: '30px' }}>
+    <thead>
+    <tr>
+      <UnpaddedHeading rowSpan={2}>Day</UnpaddedHeading>
+      <UnpaddedHeading rowSpan={2}>Service</UnpaddedHeading>
+      <CenteredHeading rowSpan={2}>Male</CenteredHeading>
+      <CenteredHeading rowSpan={2}>Female</CenteredHeading>
+      <CenteredHeading rowSpan={2}>Children</CenteredHeading>
+      <SubHeading colSpan={2}>Online</SubHeading>
+      <SubHeading colSpan={2}>Newcomers</SubHeading>
+      <SubHeading colSpan={2}>Decisions</SubHeading>
+    </tr>
+    <tr>
+      <CenteredHeading><FontAwesomeIcon icon={faFacebook} color='#3578E5'/> Facebook</CenteredHeading>
+      <CenteredHeading><FontAwesomeIcon icon={faYoutube} color='red' /> Youtube</CenteredHeading>
+      <CenteredHeading>Male</CenteredHeading>
+      <CenteredHeading>Female</CenteredHeading>
+      <CenteredHeading>Male</CenteredHeading>
+      <CenteredHeading>Female</CenteredHeading>
+    </tr>
+    </thead>
+    <tbody>
+    {records.map(record => <Attendance record={record} showPopover={showPopover} key={record.id}/>)}
+    </tbody>
+  </Table>
+)
