@@ -13,6 +13,7 @@ type ModalProps = {
 interface ModalState {
   modal: boolean
   redirect: boolean
+  validated: boolean
   buttonState: string
   buttonText: string
 }
@@ -22,13 +23,6 @@ const StyledLoader = styled(Button)`
   opacity: 0.9 !important;
   cursor: not-allowed;
 `;
-
-let LoadingButton = () => (
-  <StyledLoader color='info' size='lg' disabled>
-    Loading...
-    <Spinner type="grow" size="sm" role="status" aria-hidden="true"/>
-  </StyledLoader>
-);
 
 class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
   readonly id: string;
@@ -41,6 +35,7 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
     this.state = {
       modal: true,
       redirect: false,
+      validated: false,
       buttonState: 'primary',
       buttonText: this.id ? 'Update' : 'Create'
     }
@@ -70,9 +65,29 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
   submitForm = () => {
     let form = document.getElementById('adultAttendance') as HTMLFormElement;
 
-    this.setState({ buttonText: 'Loading'});
-    this.id ? this.updateRecord(form) : this.createRecord(form)
+    if (form.checkValidity() === true) {
+      this.setState({ buttonText: 'Loading' });
+      this.id ? this.updateRecord(form) : this.createRecord(form)
+    } else {
+      this.setState({ validated: true }, () => {
+        ['valid', 'invalid'].forEach(state => {
+          let selector = document.querySelector(`.was-validated select.form-control:${state}`);
+
+          if (selector) {
+            let feedback = document.querySelector(`.${state}-service-feedback`) as HTMLElement;
+            feedback.style.display = 'block';
+          }
+        })
+      })
+    }
   };
+
+  renderLoadingButton = () => (
+    <StyledLoader color='info' size='lg' disabled>
+      Loading...
+      <Spinner type="grow" size="sm" role="status" aria-hidden="true"/>
+    </StyledLoader>
+  );
 
   render() {
     let { modal, buttonState, buttonText, redirect } = this.state;
@@ -83,11 +98,11 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
           <ModalHeader toggle={this.toggle}>{this.id ? 'Edit' : 'New'} Record</ModalHeader>
 
           <ModalBody>
-            <AdultAttendanceForm recordId={this.id} />
+            <AdultAttendanceForm recordId={this.id} validated={this.state.validated}/>
           </ModalBody>
 
           <ModalFooter>
-            {buttonText === 'Loading' ? <LoadingButton /> :
+            {buttonText === 'Loading' ? this.renderLoadingButton() :
               <Button color={buttonState} onClick={this.submitForm} size='lg'>
                 {buttonText}
               </Button>}
