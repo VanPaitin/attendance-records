@@ -38,6 +38,11 @@ interface MaleFemaleProps {
   female: number;
 }
 
+interface FormProps {
+  recordId?: string
+  validated: boolean
+}
+
 const maleFemalePropsInit = { male: null, female: null };
 
 class Record {
@@ -52,7 +57,7 @@ class Record {
   decisions: MaleFemaleProps = maleFemalePropsInit;
 }
 
-export default ({ recordId }) => {
+export default ({ recordId, validated }: FormProps) => {
   let formatDate = date => moment(date).format('MMMM Do, YYYY.');
   let [record, setRecord] = useState<Record>(new Record());
   let [day, setDay] = useState(record.day);
@@ -100,37 +105,40 @@ export default ({ recordId }) => {
 
   let handleServiceChange = e => {
     let id = e.target.value;
+
+    if (validated) {
+      $('.invalid-service-feedback').css('display', 'none');
+      $('.valid-service-feedback').css('display', 'block');
+    }
+
     let specialService = services['Special Service'][0];
 
     setShowServiceTitle(parseInt(id, 10) === specialService.id);
   };
 
   return (
-    <Form id='adultAttendance'>
+    <Form noValidate validated={validated} id='adultAttendance'>
       <Form.Control as='input' type='hidden' name='authenticity_token' value={token}/>
       <Form.Control as='input' type='hidden' name='[adult][day]' value={day.toString()}/>
       <Form.Row>
         <Form.Group as={Col} controlId="formBasicDate">
           <Form.Label>Date</Form.Label>
-          <StyledInput defaultValue={formatDate(day)} className="datepicker" name='dummy'/>
-          <Form.Text className="text-muted">
-            Please select the date of the Church meeting
-          </Form.Text>
+          <StyledInput defaultValue={formatDate(day)} className="datepicker" name='dummy' required/>
+          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+          <Form.Control.Feedback type='invalid'>Please select the date of the Church meeting!</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group as={Col} controlId='formBasicService'>
           <Form.Label>Service</Form.Label>
-          <Form.Control
-            as='select'
-            className='selectpicker show-tick'
-            title='Please choose the service'
-            data-style='btn-primary'
-            data-header='Select the service held'
-            name='[adult]service_id'
-            onChange={handleServiceChange}
-          >
+          <Form.Control as='select' title='Please choose the service' data-style='btn-primary'
+            data-header='Select the service held' name='[adult]service_id'
+            onChange={handleServiceChange} className='selectpicker show-tick' required>
             <ServiceOptions services={services}/>
           </Form.Control>
+          <Form.Control.Feedback className='valid-service-feedback'>Looks good!</Form.Control.Feedback>
+          <Form.Control.Feedback type='invalid' className='invalid-service-feedback'>
+            Please select a service type!
+          </Form.Control.Feedback>
         </Form.Group>
 
         {showServiceTitle && <Form.Group as={Col} controlId='formBasicExtraInfo'>
