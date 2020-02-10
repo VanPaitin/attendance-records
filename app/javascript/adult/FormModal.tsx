@@ -8,6 +8,7 @@ import AdultAttendanceForm from './AdultAttendanceForm';
 
 type ModalProps = {
   fetchRecords: () => void
+  showAlert: (messageConfig: { message: string; variance: string }) => void
 }
 
 interface ModalState {
@@ -55,33 +56,46 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
     this.setState({ modal: !this.state.modal })
   };
 
-  createRecord = form => {
-    axios.post('/attendances?mode=adult', new FormData(form)).then(this.redirectBack)
-      .catch(({ response: { data }}) => {
-        this.setState({
-          errors: data, buttonState: 'primary', buttonText: this.id ? 'Update' : 'Create'
-        })
-      })
+  handleError = ({ response: { data }}) => {
+    this.setState({
+      errors: data, buttonState: 'primary', buttonText: this.id ? 'Update' : 'Create'
+    });
+    this.props.showAlert({ message: 'Please review', variance: 'danger' })
   };
 
-  updateRecord = form => {
-    axios.put(`/attendances/${this.id}?mode=adult`, new FormData(form)).then(this.redirectBack)
+  createRecord = formData => {
+    axios.post('/attendances?mode=adult', formData)
+      .then(this.redirectBack).catch(this.handleError)
+  };
+
+  updateRecord = formData => {
+    axios.put(`/attendances/${this.id}?mode=adult`, formData)
+      .then(this.redirectBack).catch(this.handleError)
   };
 
   redirectBack = () => {
     this.setState({ buttonState: 'success', buttonText: this.id ? 'Updated!' : 'Created!' });
 
-    this.props.fetchRecords();
+    this.props.fetchRecords({ showFlash: true });
 
-    setTimeout(this.toggle, 800);
+    setTimeout(() => {
+      this.toggle();
+
+      this.props.showAlert({
+        message: `Record successfully ${this.id ? 'Updated': 'Created'}!`, variance: 'success'
+      });
+    }, 800);
   };
 
   submitForm = () => {
     let form = document.getElementById('adultAttendance') as HTMLFormElement;
 
     if (form.checkValidity() === true) {
+      let formData = new FormData(form);
+
       this.setState({ buttonText: 'Loading' });
-      this.id ? this.updateRecord(form) : this.createRecord(form)
+
+      this.id ? this.updateRecord(formData) : this.createRecord(formData)
     } else {
       this.setState({ validated: true }, () => {
         ['valid', 'invalid'].forEach(state => {
@@ -108,7 +122,10 @@ class FormModal extends React.Component<ModalProps & RouteProps, ModalState> {
 
     return (
       redirect ? <Redirect to='/'/> : (
-        <Modal isOpen={modal} toggle={this.toggle} onClosed={() => this.setState({ redirect: true })} size='lg'>
+        <Modal
+          isOpen={modal} toggle={this.toggle}
+          onClosed={() => this.setState({ redirect: true })}
+          size='lg' centered>
           <ModalHeader toggle={this.toggle}>{this.id ? 'Edit' : 'New'} Record</ModalHeader>
 
           <Errors>
