@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import $ from 'jquery';
 import axios from 'axios';
 import moment from 'moment';
@@ -62,6 +62,7 @@ export default ({ recordId, validated }: FormProps) => {
   let [record, setRecord] = useState<Record>(new Record());
   let [day, setDay] = useState(record.day);
   let [services, setServices] = useState([]);
+  let [serviceId, setServiceId] = useState<number>(null);
   let [showServiceTitle, setShowServiceTitle] = useState(false);
   let token = $('meta[name="csrf-token"]').attr("content");
 
@@ -103,6 +104,16 @@ export default ({ recordId, validated }: FormProps) => {
     return () => $datepicker.datepicker('destroy');
   }, []);
 
+  useLayoutEffect(() => {
+    let serviceTitle = document.querySelector('#service-title') as HTMLInputElement;
+
+    if (serviceTitle) {
+      serviceTitle.focus();
+    } else {
+      document.querySelector<HTMLInputElement>("#formBasicMen").focus();
+    }
+  }, [serviceId]);
+
   let handleServiceChange = e => {
     let id = e.target.value;
 
@@ -114,6 +125,7 @@ export default ({ recordId, validated }: FormProps) => {
     let specialService = services['Special Service'][0];
 
     setShowServiceTitle(parseInt(id, 10) === specialService.id);
+    setServiceId(id);
   };
 
   return (
@@ -141,10 +153,10 @@ export default ({ recordId, validated }: FormProps) => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        {showServiceTitle && <Form.Group as={Col} controlId='formBasicExtraInfo'>
+        {showServiceTitle && <Form.Group as={Col}>
           <Form.Label>Service Title</Form.Label>
           <StyledInput
-            type='text' placeholder='Enter any extra info'
+            type='text' placeholder='Enter any extra info' id='service-title'
             defaultValue={record.extra_info.service_title}
             name='[adult][extra_info_attributes]service_title' required/>
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
