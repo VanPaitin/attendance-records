@@ -3,9 +3,9 @@ class AttendancesController < ApplicationController
   before_action :get_attendance, only: [:show, :update, :destroy]
 
   def index
-    attendances = @klass.attendances.page(params[:page])
+    @attendances = @klass.attendances.page(params[:page])
 
-    render json: attendances
+    render json: { records: @attendances, meta: meta_info }
   end
 
   def show
@@ -59,5 +59,12 @@ class AttendancesController < ApplicationController
       online: [:facebook, :youtube], newcomers: [:male, :female],
       decisions: [:male, :female], extra_info_attributes: [:service_title]
     )
+  end
+
+  def meta_info
+    {
+      current_page: @attendances.current_page,
+      total_pages: @attendances.total_pages
+    }
   end
 end
