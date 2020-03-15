@@ -1,10 +1,8 @@
 import React from 'react';
 import { Route, RouteProps, Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
-import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
-import Fade from 'react-bootstrap/Fade';
-import styled from 'styled-components';
+import { Button, Fade } from '../components';
+import { Container, FlashContainer, StyledAlert } from '../styles/pageStyles';
 import Pagination from 'react-paginate';
 import moment from 'moment';
 import 'daterangepicker/daterangepicker.css'
@@ -31,7 +29,7 @@ const Container = styled.div`
         .page-item:not(.active):not(.disabled) .page-link {
           color: #007bff;
         }
-       
+
         .page-item {
           cursor: pointer;
           .page-link {
@@ -60,30 +58,30 @@ const StyledAlert = styled(Alert)`
 `;
 
 type MaleFemaleType = {
-  male: number
-  female: number
-}
+  male: number;
+  female: number;
+};
 
 type Record = {
-  id: number
-  service_id: number
-  service_name: string
-  day: Date
-  male: number
-  female: number
-  children: number
+  id: number;
+  service_id: number;
+  service_name: string;
+  day: Date;
+  male: number;
+  female: number;
+  children: number;
   online: {
-    facebook: number
-    youtube: number
-  }
-  newcomers: MaleFemaleType
-  decisions: MaleFemaleType
-}
+    facebook: number;
+    youtube: number;
+  };
+  newcomers: MaleFemaleType;
+  decisions: MaleFemaleType;
+};
 
 type PopoverPosition = {
-  left: number
-  top: number
-}
+  left: number;
+  top: number;
+};
 
 enum Variance {
   success = 'success',
@@ -91,11 +89,11 @@ enum Variance {
 }
 
 interface State {
-  records: Record[]
-  popoverId: number
-  popoverPosition: PopoverPosition
-  flashMessage: string
-  flashVariance: 'success' | 'danger'
+  records: Record[];
+  popoverId: number;
+  popoverPosition: PopoverPosition;
+  flashMessage: string;
+  flashVariance: 'success' | 'danger';
   totalPages: number
   currentPage: number
   ready: boolean
@@ -113,15 +111,10 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
     ready: false
   };
 
-  fetchRecords = (page = 1) => {
-    axios.get('/attendances', { params: { mode: 'adult', page }})
-      .then(({ data: { records, meta } }) => {
-        this.setState({
-          records: records,
-          totalPages: meta.total_pages,
-          currentPage: meta.current_page
-        }, () => this.setState({ ready: true }));
-      })
+  fetchRecords = () => {
+    axios.get('/attendances', { params: { mode: 'adult' } }).then(({ data }) => {
+      this.setState({ records: data });
+    });
   };
 
   componentDidMount() {
@@ -157,17 +150,22 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
   };
 
   clearAlert = () => {
-    setTimeout(() => this.setState({ flashMessage: '' }), 3000)
+    setTimeout(() => this.setState({ flashMessage: '' }), 3000);
   };
 
-  removeRecord = (id) => {
+  removeRecord = id => {
     let confirmation = confirm('Are you sure to delete the record?');
 
     if (confirmation) {
-      let meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+      let meta = document.querySelector(
+        'meta[name="csrf-token"]'
+      ) as HTMLMetaElement;
       let token = meta.content;
 
-      axios.delete(`/attendances/${id}?mode=adult`, { data: { authenticity_token: token } })
+      axios
+        .delete(`/attendances/${id}?mode=adult`, {
+          data: { authenticity_token: token }
+        })
         .then(() => {
           this.setState({
             popoverId: null,
@@ -175,9 +173,8 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
             flashMessage: 'Record successfully deleted!',
             flashVariance: 'success'
           });
-          this.clearAlert()
-        }
-      )
+          this.clearAlert();
+        });
     }
   };
 
@@ -191,13 +188,16 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
         let clientWidth = document.body.clientWidth;
         let minLeftOffset = clientWidth - 200;
         let leftOffset = e.clientX <= minLeftOffset ? e.clientX : minLeftOffset;
-        this.setState({ popoverPosition: { left: leftOffset, top: e.clientY }, popoverId: id})
-      }, 150)
+        this.setState({
+          popoverPosition: { left: leftOffset, top: e.clientY },
+          popoverId: id
+        });
+      }, 150);
     }
   };
 
   clearPopoverId = () => {
-    this.setState({ popoverId: null })
+    this.setState({ popoverId: null });
   };
 
   handlePageClick = data => {
@@ -206,7 +206,15 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
       () => this.fetchRecords(this.state.currentPage))
   };
 
-  renderFormModal = () => <FormModal fetchRecords={this.fetchRecords} showAlert={this.showAlert} />;
+  handlePageClick = data => {
+    this.setState(
+      { currentPage: data.selected + 1, ready: false },
+      () => this.fetchRecords(this.state.currentPage))
+  };
+
+  renderFormModal = () => (
+    <FormModal fetchRecords={this.fetchRecords} showAlert={this.showAlert} />
+  );
 
   render() {
     return (
@@ -219,47 +227,48 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
             </StyledAlert>
           </FlashContainer>
         </Fade>
-        <Container className='container'  onClick={this.clearPopoverId}>
+        <Container className='container' onClick={this.clearPopoverId}>
           <ActionsPopover
             recordId={this.state.popoverId}
             position={this.state.popoverPosition}
             removeRecord={this.removeRecord}
-            clearPopover={this.clearPopoverId}/>
+            clearPopover={this.clearPopoverId}
+          />
 
           <h3>Recent Records</h3>
 
-          <AttendancesTable records={this.state.records} showPopover={this.showPopover} ready={this.state.ready}/>
+          <AttendancesTable records={this.state.records} showPopover={this.showPopover} ready={this.state.ready} />
 
           <div className='footer'>
             <Button as={Link} to={`${this.props.match.url}attendance/new`}
-                    variant="primary" size="lg" style={{ height: '56px' }}>
+              variant="primary" size="lg" style={{ height: '56px' }}>
               New Record
             </Button>
             {
               this.state.totalPages > 1 &&
-                <div className='pagination'>
-                  <Pagination
-                    previousLabel='Previous'
-                    previousClassName='page-item'
-                    previousLinkClassName='page-link'
-                    nextLabel='Next'
-                    nextClassName='page-item'
-                    nextLinkClassName='page-link'
-                    breakLabel='...'
-                    breakClassName='page-item'
-                    breakLinkClassName='page-link'
-                    pageCount={this.state.totalPages}
-                    pageClassName='page-item'
-                    pageLinkClassName='page-link'
-                    disabledClassName='disabled'
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={this.handlePageClick}
-                    containerClassName='pagination pagination-lg'
-                    subContainerClassName='pages pagination'
-                    activeClassName='active'
-                  />
-                </div>
+              <div className='pagination'>
+                <Pagination
+                  previousLabel='Previous'
+                  previousClassName='page-item'
+                  previousLinkClassName='page-link'
+                  nextLabel='Next'
+                  nextClassName='page-item'
+                  nextLinkClassName='page-link'
+                  breakLabel='...'
+                  breakClassName='page-item'
+                  breakLinkClassName='page-link'
+                  pageCount={this.state.totalPages}
+                  pageClassName='page-item'
+                  pageLinkClassName='page-link'
+                  disabledClassName='disabled'
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={this.handlePageClick}
+                  containerClassName='pagination pagination-lg'
+                  subContainerClassName='pages pagination'
+                  activeClassName='active'
+                />
+              </div>
             }
           </div>
 
@@ -272,7 +281,7 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
           </Route>
         </Container>
       </>
-    )
+    );
   }
 }
 
