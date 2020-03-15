@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Navbar from './Navbar';
-import JuniorChurchAttendance from './JuniorChurchAttendance';
+import JuniorChurch from './juniorChurch';
 import TeenageChurchAttendance from './TeenageChurchAttendance';
 import AdultChurchAttendance from './adult/AdultChurchAttendance';
 
@@ -12,9 +12,7 @@ export default () => {
       <Navbar />
 
       <Switch>
-        <Route path='/junior+church'>
-          <JuniorChurchAttendance />
-        </Route>
+        <Route path='/junior_church' component={JuniorChurch} />
 
         <Route path='/teenage+church'>
           <TeenageChurchAttendance />
@@ -25,5 +23,5 @@ export default () => {
         </Route>
       </Switch>
     </div>
-  )
-}
+  );
+};

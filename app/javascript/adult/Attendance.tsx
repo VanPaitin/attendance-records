@@ -1,6 +1,6 @@
 import React from 'react';
-import moment from 'moment';
 import styled from 'styled-components';
+import { formatDate } from '../utils';
 
 const BoldCell = styled.td`
   font-weight: bold;
@@ -16,7 +16,7 @@ const PointerRow = styled.tr`
 
 export default ({ record, showPopover }) => (
   <PointerRow onClick={e => showPopover(e, record.id)}>
-    <BoldCell>{moment(record.day).format('dddd, MMM D, YYYY')}</BoldCell>
+    <BoldCell>{formatDate(record.day)}</BoldCell>
     <BoldCell style={{ color: 'blue' }}>{record.service_name}</BoldCell>
     <CenteredCell>{record.male}</CenteredCell>
     <CenteredCell>{record.female}</CenteredCell>
@@ -28,4 +28,4 @@ export default ({ record, showPopover }) => (
     <CenteredCell>{record.decisions.male}</CenteredCell>
     <CenteredCell>{record.decisions.female}</CenteredCell>
   </PointerRow>
-)
+);
