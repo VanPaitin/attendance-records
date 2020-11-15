@@ -3,7 +3,7 @@ class AttendancesController < ApplicationController
   before_action :get_attendance, only: [:show, :update, :destroy]
 
   def index
-    @attendances = @klass.attendances.page(params[:page])
+    @attendances = @klass.attendances.page(params[:page]).filter(params[:date])
 
     render json: { records: @attendances, meta: meta_info }
   end

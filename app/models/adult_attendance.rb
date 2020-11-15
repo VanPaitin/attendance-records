@@ -22,6 +22,12 @@ class AdultAttendance < ApplicationRecord
     joins(:service).left_joins(:extra_info).select("#{table_name}.*", attendances_sql).order(day: :desc)
   end
 
+  scope :within_date, ->(held_since:, held_before:) do
+    where(day: held_since..held_before) if held_since.present?
+  end
+
+  scope :by_service, -> service_id { where(service_id: service_id) }
+
   delegate :name, :weekday, :any_weekday?, to: :service, allow_nil: :true
 
   class << self

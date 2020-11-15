@@ -6,15 +6,43 @@ import Button from 'react-bootstrap/Button';
 import Fade from 'react-bootstrap/Fade';
 import styled from 'styled-components';
 import Pagination from 'react-paginate';
+import moment from 'moment';
+import 'daterangepicker/daterangepicker.css'
 
 import FormModal from './FormModal';
 import ActionsPopover from './ActionsPopover';
 import AttendancesTable from './AttendancesTable';
 
+declare global {
+  interface Window { $: any; }
+}
+
+const $ = window.$;
+
 const Container = styled.div`
   &.container {
     margin-top: 50px;
     max-width: 1170px;
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      .pagination {
+        .page-item:not(.active):not(.disabled) .page-link {
+          color: #007bff;
+        }
+       
+        .page-item {
+          cursor: pointer;
+          .page-link {
+            box-shadow: none;
+          }
+          &.disabled, &.active {
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
   }
 `;
 
@@ -29,28 +57,6 @@ const StyledAlert = styled(Alert)`
   letter-spacing: 1px;
   text-align: center;
   word-spacing: 10px;
-`;
-
-const RecordFooter = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 50px;
-`;
-
-const Styled = styled.div`
-   .page-item:not(.active):not(.disabled) .page-link {
-     color: #007bff;
-   }
-   
-   .page-item {
-     cursor: pointer;
-     .page-link {
-       box-shadow: none;
-     }
-     &.disabled, &.active {
-       cursor: not-allowed;
-     }
-   }
 `;
 
 type MaleFemaleType = {
@@ -119,6 +125,28 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
   };
 
   componentDidMount() {
+    const start = moment().subtract(29, 'days');
+    const end = moment();
+
+    const cb = (start, end) => {
+      $('div.date-range').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    };
+
+    $('div.date-range').daterangepicker({
+      startDate: start,
+      endDate: end,
+      ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment()],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      },
+      alwaysShowCalendars: true
+    }, cb);
+
+    cb(start, end);
     this.fetchRecords(this.state.currentPage);
   }
 
@@ -183,6 +211,7 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
   render() {
     return (
       <>
+        <div className='date-range' />
         <Fade in={!!this.state.flashMessage.length}>
           <FlashContainer>
             <StyledAlert variant={this.state.flashVariance}>
@@ -201,14 +230,14 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
 
           <AttendancesTable records={this.state.records} showPopover={this.showPopover} ready={this.state.ready}/>
 
-          <RecordFooter>
+          <div className='footer'>
             <Button as={Link} to={`${this.props.match.url}attendance/new`}
                     variant="primary" size="lg" style={{ height: '56px' }}>
               New Record
             </Button>
             {
               this.state.totalPages > 1 &&
-                <Styled>
+                <div className='pagination'>
                   <Pagination
                     previousLabel='Previous'
                     previousClassName='page-item'
@@ -230,9 +259,9 @@ class AdultChurchAttendance extends React.Component<RouteProps, State> {
                     subContainerClassName='pages pagination'
                     activeClassName='active'
                   />
-                </Styled>
+                </div>
             }
-          </RecordFooter>
+          </div>
 
           <Route path={`${this.props.match.path}attendance/new`}>
             {this.renderFormModal()}
