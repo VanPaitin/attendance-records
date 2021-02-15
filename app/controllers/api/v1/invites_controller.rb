@@ -3,6 +3,10 @@ module Api
     class InvitesController < ApplicationController
       before_action :ensure_admin
 
+      def index
+        render json: Invitation.page(params[:page]), status: 200
+      end
+
       def create
         email, role_id = params.require([:email, :role_id])
 

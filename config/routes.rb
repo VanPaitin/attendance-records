@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: :create
       resources :sessions, only: [:create, :destroy]
-      resources :invites, only: [:create, :destroy] do
+      resources :invites, only: [:create, :index, :destroy] do
         put :resend, on: :collection
       end
     end
