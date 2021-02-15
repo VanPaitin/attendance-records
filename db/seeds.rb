@@ -22,6 +22,18 @@ services = [
   { name: 'Special Service', category: 'Special Service', weekday: 'any' }
 ]
 
-Service.create!(services)
-
+Service.create! services
 puts 'Successfully created service types!'
+
+
+roles = [
+  { name: 'admin' },
+  { name: 'usher' },
+  { name: 'it' },
+  { name: 'counsellor' },
+  { name: 'teenage_church' },
+  { name: 'junior_church' }
+]
+
+Role.create! roles
+puts 'Successfully created roles'
