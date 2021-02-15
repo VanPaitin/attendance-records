@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :invites, only: [:create, :index, :destroy] do
         put :resend, on: :collection
       end
+      resources :roles, only: :index
     end
   end
   resources 'attendances', except: [:new, :edit]
