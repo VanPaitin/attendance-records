@@ -1,11 +1,11 @@
 <h1>Hi</h1>
 <h4>
-  You have invited to join the team of GSP attendance recorders.<br>
+  You have been invited to join the team of GSP attendance recorders.<br>
 </h4>
 <p>
-  You can accept this invitation by clicking <%= link_to "Here", api_v1_users_path(token: @token) %>.
+  You can accept this invitation by clicking <%= link_to "Here", new_user_url(token: @token) %>.
 </p>
 <p>If the link above does not seem to be clickable, copy and paste the url below in your browser</p>
-<%= api_v1_users_path(token: @token) %>
+<%= new_user_url(token: @token) %>
 
-<p>We are happy to have you on board.</p>
+<p>We are happy to have you on board 🙂.</p>

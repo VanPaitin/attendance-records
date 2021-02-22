@@ -1,4 +1,4 @@
-class ApplicationController < ActionController::API
+class ApplicationController < ActionController::Base
   include ErrorHandling
 
   before_action :ensure_login
@@ -12,7 +12,7 @@ class ApplicationController < ActionController::API
   end
 
   def ensure_login
-    current_user.present?
+    raise NotAuthenticatedError unless current_user.present?
   end
 
   def ensure_admin

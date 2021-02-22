@@ -4,20 +4,20 @@ module Api
       before_action :ensure_admin
 
       def index
-        render json: Invitation.page(params[:page]), status: 200
+        render json: Invite.page(params[:page]), status: 200
       end
 
       def create
-        email, role_id = params.require([:email, :role_id])
+        email, role_ids = invite_params.values_at(:email, :role_ids)
 
         if user = User.find_by(email: email)
-          role = Role.find(role_id)
+          roles = Role.where(id: role_ids)
 
-          user.roles << role unless user.roles.exists? role
+          roles.each { |role| user.roles << role }
 
           render json: { success: 'Role successfully added to existing user' }
         else
-          invite = Invite.new(email: email, role_id: role_id)
+          invite = Invite.new(email: email, role_ids: role_ids)
 
           if invite.save
             InviteMailer.with(email: email, token: invite.token).invite_user.deliver
@@ -32,12 +32,12 @@ module Api
       def resend
         user_email = params.require(:email)
 
-        if Invite.find_by(email: user_email)
+        if invite = Invite.find_by(email: user_email, recipient_id: nil)
           InviteMailer.with(email: user_email, token: invite.token).invite_user.deliver
 
           render json: { success: 'Invite email successfully re-sent to user' }
         else
-          render json: { error: 'User not found' }, status: 404
+          render json: { error: 'No pending invitations found for this email' }, status: 404
         end
       end
 
@@ -51,6 +51,12 @@ module Api
 
           head 204
         end
+      end
+
+      private
+
+      def invite_params
+        params.permit(:email, role_ids: [])
       end
     end
   end

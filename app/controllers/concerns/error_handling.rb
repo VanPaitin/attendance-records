@@ -7,7 +7,7 @@ module ErrorHandling
   end
 
   def expired_token
-    render json: { error: language.expired_token }, status: 401
+    render json: { error: 'Token expired' }, status: 401
   end
 
   def not_authenticated

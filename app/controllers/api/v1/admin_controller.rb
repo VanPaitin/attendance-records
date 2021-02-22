@@ -6,6 +6,10 @@ module Api
       def index
         render json: User.page(params[:page])
       end
+
+      def edit
+
+      end
     end
   end
 end

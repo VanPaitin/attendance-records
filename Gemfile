@@ -15,8 +15,8 @@ gem 'sass-rails', '>= 6'
 gem 'webpacker', '~> 4.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.7'
+gem 'jwt'
+
 # Use validates timeliness to validate date fields
 gem 'validates_timeliness', '~> 5.0.0.alpha3'
 # Use Redis adapter to run Action Cable in production
@@ -30,7 +30,9 @@ gem 'kaminari'
 gem 'rack-cors'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
-gem 'jwt'
+
+# Open emails in development
+gem "letter_opener", :group => :development
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'pry-byebug'
