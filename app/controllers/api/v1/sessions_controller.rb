@@ -8,8 +8,11 @@ module Api
 
         if @user && @user.authenticate(params[:password])
           token = JsonWebToken.issue_token(@user)
-          render json: { success: 'Successfully logged in', auth_token: token },
-                 status: 200
+          render json: {
+            success: 'Successfully logged in',
+            auth_token: token,
+            user: @user.as_json.merge(roles: @user.roles)
+          }, status: 200
         else
           render json: { error: 'Wrong email or password supplied' },
                  status: 422

@@ -4,7 +4,8 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:new, :create, :update, :destroy]
-      resources :sessions, only: [:create, :destroy]
+      resources :sessions, only: [:create]
+      delete :sessions, to: 'sessions#destroy'
       resources :invites, only: [:create, :index, :destroy] do
         put :resend, on: :collection
       end
