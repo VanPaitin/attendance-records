@@ -46,13 +46,12 @@ ActiveRecord::Schema.define(version: 2021_02_15_062836) do
 
   create_table "invites", force: :cascade do |t|
     t.string "email"
-    t.bigint "role_id", null: false
+    t.integer "role_ids", array: true
     t.integer "sender_id"
     t.integer "recipient_id"
     t.string "token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["role_id"], name: "index_invites_on_role_id"
     t.index ["token"], name: "index_invites_on_token", unique: true
   end
 
@@ -102,7 +101,6 @@ ActiveRecord::Schema.define(version: 2021_02_15_062836) do
   end
 
   add_foreign_key "adult_attendances", "services"
-  add_foreign_key "invites", "roles"
   add_foreign_key "non_adult_attendances", "services"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
